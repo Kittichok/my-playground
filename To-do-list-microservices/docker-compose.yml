@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  auth-service:
+    build:
+      context: ./go-auth
+    networks:
+      - backend
+      - frontend
+  api-todo:
+    build:
+      context: ./api-node-todo
+    networks:
+      - backend
+      - frontend
+  web:
+    build:
+      context: ./web-todo
+    networks:
+      - frontend
+    ports:
+      - 8080:5000
+  
+networks: 
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
