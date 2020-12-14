@@ -15,3 +15,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "todo-auth-service" 
           heroku_email: ${{secrets.HEROKU_EMAIL}}
+          appdir: "To-do-list-microservices/go-auth"
