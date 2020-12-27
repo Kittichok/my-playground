@@ -1,5 +1,5 @@
 build:
   docker:
-    web: Dockerfile
+    auth: Dockerfile
 run:
-  web: ./app
+  auth: ./app

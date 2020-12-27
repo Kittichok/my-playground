@@ -7,6 +7,12 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
 	r := gin.Default()
 
 	models.ConnectDataBase()
@@ -29,5 +35,5 @@ func main() {
 		//TODO add api refresh token
 	}
 
-	r.Run(":5000")
+	r.Run(":" + port)
 }
