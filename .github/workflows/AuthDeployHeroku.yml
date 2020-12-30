@@ -13,6 +13,6 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.7.8 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "todo-auth-service" 
+          heroku_app_name: "my-auth-service-j" 
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           appdir: "To-do-list-microservices/go-auth"
