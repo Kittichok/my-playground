@@ -28,6 +28,14 @@ func main() {
 		v1.GET("/api/tokens", controllers.GetTokens)
 		//TODO add api refresh token
 	}
+	port := getenv("PORT", "80")
+	r.Run(":" + port)
+}
 
-	r.Run(":5000")
+func getenv(key, fallback string) string {
+    value := os.Getenv(key)
+    if len(value) == 0 {
+        return fallback
+    }
+    return value
 }
