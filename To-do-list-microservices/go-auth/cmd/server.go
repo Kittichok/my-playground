@@ -33,6 +33,7 @@ func main() {
 		v1.GET("/api/users", controllers.GetUsers)
 		v1.GET("/api/tokens", controllers.GetTokens)
 		//TODO add api refresh token
+		//TODO add api create user
 	}
 
 	r.Run(":" + port)
