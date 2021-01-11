@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/kittichok/app/internal/controllers"
 	"github.com/kittichok/app/internal/models"
@@ -21,13 +23,22 @@ func main() {
 		})
 	})
 
-	v1 := r.Group("/v1")
+	v1 := r.Group("/v1/api")
 	{
-		v1.POST("/api/signin", controllers.SignIn)
-		v1.GET("/api/users", controllers.GetUsers)
-		v1.GET("/api/tokens", controllers.GetTokens)
+		v1.POST("/signin", controllers.SignIn)
+		v1.GET("/users", controllers.GetUsers)
+		v1.GET("/tokens", controllers.GetTokens)
+		v1.POST("/signup", controllers.SignUp)
 		//TODO add api refresh token
 	}
+	port := getenv("PORT", "80")
+	r.Run(":" + port)
+}
 
-	r.Run(":5000")
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
 }
