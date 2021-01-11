@@ -1,7 +1,7 @@
 package models
 
 type Token struct {
-	UserID       uint
+	UserID       string
 	AccessToken  string
 	RefreshToken string
 	IsActive     bool

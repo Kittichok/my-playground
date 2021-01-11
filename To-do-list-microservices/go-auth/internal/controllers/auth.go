@@ -3,11 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 	"github.com/kittichok/app/internal/models"
+	"github.com/kittichok/app/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +22,14 @@ func SignIn(c *gin.Context) {
 	}
 
 	var existUser models.User
-	/// @TODO password must hash
+	// @TODO : refactor
+	err = models.DB.First(&existUser, models.User{Username: json.Username}).Error
+	if err != nil {
+		fmt.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username or password"})
+		return
+	}
+	json.Password = string(utils.HashPassword([]byte(json.Password), []byte(existUser.Salt)))
 	err = models.DB.First(&existUser, json).Error
 	if err != nil {
 		fmt.Println(err.Error())
@@ -34,7 +42,8 @@ func SignIn(c *gin.Context) {
 	claims := &jwt.StandardClaims{
 		ExpiresAt: expiresAt,
 		Issuer:    "auth.todo-list",
-		Id:        strconv.FormatUint(uint64(existUser.ID), 10),
+		// Id:        strconv.FormatUint(uint64(existUser.ID), 10),
+		Id: existUser.ID,
 	}
 
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -47,7 +56,6 @@ func SignIn(c *gin.Context) {
 		IsActive:    true,
 		UserID:      existUser.ID,
 	}
-	// err = existUser.AddToken(t)
 	err = models.SaveToken(t)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -88,5 +96,39 @@ func GetTokens(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"tokens": tokens,
 	})
+	return
+}
+
+func SignUp(c *gin.Context) {
+	var json *models.User
+	err := c.ShouldBindJSON(&json)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var existUser models.User
+	models.DB.First(&existUser, models.User{Username: json.Username})
+	if existUser.Username != "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user is exist"})
+		return
+	}
+
+	salt, err := utils.GenerateRandomBytes(utils.SaltSize)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "system error"})
+		return
+	}
+	hash := utils.HashPassword([]byte(json.Password), salt)
+	json.Password = string(hash)
+	json.Salt = string(salt)
+	json.ID = uuid.Must(uuid.NewRandom()).String()
+	var user = models.DB.Create(&json)
+	// var user = models.DB.Create(models.User{Username: json.Username, Password: json.Password, Salt: json.Salt})
+	if user != nil {
+		c.Status(http.StatusCreated)
+		return
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{"error": "system error"})
 	return
 }
