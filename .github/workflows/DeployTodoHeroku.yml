@@ -13,6 +13,6 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.7.8 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "obscure-tundra-12044" 
+          heroku_app_name: "vast-earth-39107" 
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           appdir: "To-do-list-microservices/api-graphql"
