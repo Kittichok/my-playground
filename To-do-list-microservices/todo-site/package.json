@@ -17,9 +17,19 @@
   "dependencies": {
     "babel-plugin-styled-components": "^1.12.0",
     "gatsby": "^2.26.1",
+    "gatsby-plugin-create-client-paths": "^2.8.0",
+    "gatsby-plugin-postcss": "^3.5.0",
     "gatsby-plugin-styled-components": "^3.7.0",
+    "gatsby-plugin-typography": "^2.10.0",
+    "postcss": "^8.2.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "styled-components": "^5.2.1"
+    "react-typography": "^0.16.19",
+    "styled-components": "^5.2.1",
+    "typography": "^0.16.19",
+    "typography-theme-fairy-gates": "^0.16.19"
+  },
+  "devDependencies": {
+    "tailwindcss": "^2.0.2"
   }
 }
