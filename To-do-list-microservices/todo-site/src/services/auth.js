@@ -1,3 +1,5 @@
+import { login } from './api'
+
 export const isBrowser = () => typeof window !== "undefined"
 
 export const getUser = () =>
@@ -8,22 +10,20 @@ export const getUser = () =>
 const setUser = user =>
   window.localStorage.setItem("gatsbyUser", JSON.stringify(user))
 
-export const handleLogin = ({ username, password }) => {
-  if (username === `john` && password === `pass`) {
+export const handleLogin = async ({ username, password }) => {
+  const resp = await login({ username, password })
+  if(resp) {
     return setUser({
-      username: `john`,
-      name: `Johnny`,
-      email: `johnny@example.org`,
+      token: resp.AccessToken,
     })
   }
-
   return false
 }
 
 export const isLoggedIn = () => {
   const user = getUser()
 
-  return !!user.username
+  return user && !!user.token
 }
 
 export const logout = callback => {

@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kittichok/app/internal/controllers"
 	"github.com/kittichok/app/internal/models"
@@ -13,7 +14,7 @@ func main() {
 
 	models.ConnectDataBase()
 	// models.Seed()
-
+	r.Use(cors.Default())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 

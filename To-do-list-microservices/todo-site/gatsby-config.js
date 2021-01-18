@@ -1,3 +1,7 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 module.exports = {
   // siteMetadata: {
   //   title: "TodoSite",
@@ -14,5 +18,6 @@ module.exports = {
       resolve: `gatsby-plugin-create-client-paths`,
       options: { prefixes: [`/app/*`] },
     },
+    'gatsby-plugin-postcss',
   ],
 };

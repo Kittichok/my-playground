@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { ApolloServer } from 'apollo-server-express';
 import * as jwt from 'jsonwebtoken';
+import cors from 'cors'
 
 const PORT = process.env.PORT || 4000
 
@@ -20,9 +21,17 @@ async function main() {
   });
   const app = express();
   const server = new ApolloServer({
-    schema
+    schema,
+    context: ({ req }) => {
+      const context = {
+        req,
+        userid: req.body.userid,
+      };
+      return context;
+    },
   });
   const path = '/graphql';
+  app.use(cors())
   app.use(bodyParser.json())
   app.use(path, verifyJWT);
   server.applyMiddleware({ app, path });
@@ -42,6 +51,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     
     const decoded = jwt.verify(token, 'AllYourBase') as any;
     if (decoded) {
+      // console.log('decoded',decoded);
       req.body["userid"] = decoded.jti;
       next();
     } else {
