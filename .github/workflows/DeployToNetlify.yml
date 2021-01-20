@@ -12,13 +12,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - run: npm install
-      - run: npm run build
+      - run: npm install ./todo-microservices/todo-site
+      - run: npm run build ./todo-microservices/todo-site
 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.1
         with:
-          publish-dir: './public'
+          publish-dir: './todo-microservices/todo-site/public'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
