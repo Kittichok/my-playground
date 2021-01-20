@@ -1,0 +1,26 @@
+name: Build and Deploy to Netlify
+on:
+  push:
+    branches: 'todo-site'
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install package and build
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - run: npm install
+      - run: npm run build
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './public'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
+
