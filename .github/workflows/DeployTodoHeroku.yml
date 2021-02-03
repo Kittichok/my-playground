@@ -16,3 +16,4 @@ jobs:
           heroku_app_name: "vast-earth-39107" 
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           appdir: "To-do-list-microservices/api-graphql"
+          usedocker: true
