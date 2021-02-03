@@ -1,6 +1,10 @@
-FROM node:12-slim
+FROM node:15-alpine
 
 WORKDIR /usr/src/app
+
+RUN apk add --no-cache g++ make python
+
+RUN npm install --quiet node-gyp -g
 
 COPY package.json ./
 
