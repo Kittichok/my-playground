@@ -2,15 +2,18 @@ from diagrams import Cluster, Diagram
 from diagrams.onprem.compute import Server
 from diagrams.onprem.client import Users
 from diagrams.onprem.container import Docker
-from diagrams.onprem.database import MongoDB
+from diagrams.generic.database import SQL
 
 
 with Diagram("Todo microservice", show=False):
-    api = Server("auth")
+    auth = Server("auth")
+    todo = Server("todo")
     users = Users("users")
     web = Server("web")
-    auth_db = MongoDB("auth db")
+    auth_db = SQL("auth db")
+    todo_db = SQL("todo db")
 
-    users >> api >> auth_db
-
+    web >> auth >> auth_db
+    web >> todo >> todo_db
     users >> web
+
