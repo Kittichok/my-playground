@@ -1,25 +1,34 @@
 import React from 'react';
 import logo from '../assets/logo.svg';
 import { Form, Input, Button, Card } from 'antd';
+import { useHistory } from 'react-router-dom';
+import { authenticationService } from '../services/authentication';
+import { route } from '../config';
 
 function Login() {
+  let history = useHistory();
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    var success: boolean = authenticationService.login(values.email, values.password)
+    if (success) {
+      history.push(route.listing);
+    }
+    else {
+      //TODO popup login fail
+    }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onRegister = () => {
+    history.push(route.register);
+  }
 
   return (
     <div>
-      <img src={logo} className="App-logo" alt="logo" />
-      <Card style={{ width: 400 }}>
+      <Card>
+        <img src={logo} className="App-logo" alt="logo" />
         <Form
           layout="vertical"
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
         >
           <Form.Item
             label="อีเมล์"
@@ -44,7 +53,7 @@ function Login() {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary">
+            <Button type="primary" onClick={onRegister}>
               สร้างบัญชีผู้ใช้
             </Button>
           </Form.Item>

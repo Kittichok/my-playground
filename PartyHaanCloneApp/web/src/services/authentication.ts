@@ -18,6 +18,7 @@ function login(username: string, password: string) {
     //     });
     //TODO Call backend
     localStorage.setItem('currentUser', JSON.stringify("tokenasdasd"));
+    return true;
 }
 
 function logout() {

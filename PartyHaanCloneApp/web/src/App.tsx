@@ -9,15 +9,16 @@ import CreateParty from "./pages/createParty";
 import Login from './pages/login';
 import PartyList from "./pages/partyList";
 import Register from "./pages/register";
+import { route } from './config';
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Route exact path="/" component={Login} />
-        <Route path="/register" component={Register} />
-        <PrivateRoute path="/partyList" component={PartyList} />
-        <PrivateRoute path="/createParty" component={CreateParty} />
+        <Route exact path={route.login} component={Login} />
+        <Route path={route.register} component={Register} />
+        <PrivateRoute path={route.listing} component={PartyList} />
+        <PrivateRoute path={route.createParty} component={CreateParty} />
       </Router>
     </div>
   );
