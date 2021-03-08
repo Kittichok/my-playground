@@ -1,9 +1,21 @@
 import React from 'react';
 import { Form, Input, Button, Card, Checkbox } from 'antd';
+import { authenticationService } from '../services/authentication';
+import { route } from '../config';
+import { useHistory } from 'react-router';
 
 function Register() {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  let history = useHistory();
+  const onFinish = async (values: any) => {
+    const matchPass = values.password === values.confirmPassword;
+    if (matchPass) {
+      const success = await authenticationService.register(values.email, values.password);
+      if (success) {
+        history.push(route.login);
+      }
+      //TODO alert not success return
+    }
+    //TODO alert not match
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -13,7 +25,7 @@ function Register() {
   return (
     <div>
       <Card style={{ width: 400 }}>
-      <Form
+        <Form
           layout="vertical"
           initialValues={{ remember: true }}
           onFinish={onFinish}
@@ -22,7 +34,13 @@ function Register() {
           <Form.Item
             label="อีเมล์"
             name="email"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            rules={[
+              {
+                required: true,
+                message: 'Please input your email!',
+                type: 'email',
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -38,12 +56,16 @@ function Register() {
           <Form.Item
             label="ยืนยันรหัสผ่าน"
             name="confirmPassword"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            rules={[{ required: true, message: 'Please input your confirm password!' }]}
           >
             <Input.Password />
           </Form.Item>
 
-          <Form.Item name="termAndCon" valuePropName="checked">
+          <Form.Item
+            name="termAndCon"
+            valuePropName="checked"
+            rules={[{ required: true, message: 'term and condition is require' }]}
+          >
             <Checkbox>ฉันยอมรับเงื่อนไขและข้อตกลงเกี่ยวกับการใช้งาน</Checkbox>
           </Form.Item>
 
@@ -52,10 +74,10 @@ function Register() {
               ยืนยัน
             </Button>
           </Form.Item>
-          </Form>
+        </Form>
       </Card>
     </div>
-  )
+  );
 }
 
 export default Register;

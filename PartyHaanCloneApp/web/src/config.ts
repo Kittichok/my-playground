@@ -1,10 +1,8 @@
 const route = {
   login: '/',
   register: '/register',
-  listing: 'partyList',
-  createParty: 'createParty'
-}
+  listing: '/partyList',
+  createParty: '/createParty',
+};
 
-export {
-  route
-}
+export { route };

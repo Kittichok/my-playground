@@ -1,14 +1,11 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Route
-} from "react-router-dom";
-import './App.css'
-import PrivateRoute from "./components/privateRoute";
-import CreateParty from "./pages/createParty";
+import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import './App.css';
+import PrivateRoute from './components/privateRoute';
+import CreateParty from './pages/createParty';
 import Login from './pages/login';
-import PartyList from "./pages/partyList";
-import Register from "./pages/register";
+import PartyList from './pages/partyList';
+import Register from './pages/register';
 import { route } from './config';
 
 function App() {

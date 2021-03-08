@@ -1,32 +1,41 @@
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
+const login = async (email: string, password: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    url: `${process.env.REACT_APP_APIDOMAIN}/user/login`,
+    data: { email, password },
+  };
 
-function login(username: string, password: string) {
-    // const requestOptions = {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ username, password })
-    // };
+  return axios(config).then((resp: any) => {
+    const { token } = resp.data;
+    if (token) {
+      localStorage.setItem('token', token);
+      return token;
+    }
+    return;
+  });
+};
 
-    // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-    //     .then(handleResponse)
-    //     .then(user => {
-    //         // store user details and jwt token in local storage to keep user logged in between page refreshes
-    //         localStorage.setItem('currentUser', JSON.stringify(user));
-    //         currentUserSubject.next(user);
+const logout = () => {
+  localStorage.removeItem('token');
+};
 
-    //         return user;
-    //     });
-    //TODO Call backend
-    localStorage.setItem('currentUser', JSON.stringify("tokenasdasd"));
-    return true;
-}
+const register = async (email: string, password: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    url: `${process.env.REACT_APP_APIDOMAIN}/user/create`,
+    data: { email, password },
+  };
 
-function logout() {
-    localStorage.removeItem('currentUser');
-}
+  return axios(config).then((resp: AxiosResponse) => {
+    return resp.status === 201;
+  });
+};
 
 export const authenticationService = {
-    login,
-    logout,
-    token: JSON.parse(localStorage.getItem('currentUser') as string),
+  login,
+  logout,
+  register,
+  token: localStorage.getItem('token') as string,
 };

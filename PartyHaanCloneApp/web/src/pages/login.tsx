@@ -7,33 +7,35 @@ import { route } from '../config';
 
 function Login() {
   let history = useHistory();
-  const onFinish = (values: any) => {
-    var success: boolean = authenticationService.login(values.email, values.password)
-    if (success) {
+  const onFinish = async (values: any) => {
+    const token = await authenticationService.login(values.email, values.password);
+    if (token) {
       history.push(route.listing);
-    }
-    else {
+    } else {
       //TODO popup login fail
+      console.log('login fail');
     }
   };
 
   const onRegister = () => {
     history.push(route.register);
-  }
+  };
 
   return (
     <div>
       <Card>
         <img src={logo} className="App-logo" alt="logo" />
-        <Form
-          layout="vertical"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-        >
+        <Form layout="vertical" initialValues={{ remember: true }} onFinish={onFinish}>
           <Form.Item
             label="อีเมล์"
             name="email"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            rules={[
+              {
+                required: true,
+                message: 'Please input your email!',
+                type: 'email',
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -57,11 +59,10 @@ function Login() {
               สร้างบัญชีผู้ใช้
             </Button>
           </Form.Item>
-
         </Form>
       </Card>
     </div>
-  )
+  );
 }
 
 export default Login;

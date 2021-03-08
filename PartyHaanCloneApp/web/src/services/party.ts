@@ -1,35 +1,51 @@
-const getList = () => {
-    //TODO call get party list 
-    return [{
-        img: "https://www.scdn.co/i/_global/open-graph-default.png",
-        name: "Spotify",
-        totalMember: 5,
-        currentMember: 0,
-        id: 1,
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { authenticationService } from './authentication';
+
+const getList = async () => {
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    url: `${process.env.REACT_APP_APIDOMAIN}/party/list`,
+    headers: {
+      Authorization: 'Bearer ' + authenticationService.token,
     },
-    {
-        img: "https://www.scdn.co/i/_global/open-graph-default.png",
-        name: "Spotify",
-        totalMember: 5,
-        currentMember: 0,
-        id: 2,
+  };
+
+  return axios(config).then((resp: AxiosResponse<[]>) => {
+    const partyList = resp.data;
+    return partyList;
+  });
+};
+
+const create = async (partyName: string, totalMember: number) => {
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    url: `${process.env.REACT_APP_APIDOMAIN}/party/create`,
+    headers: {
+      Authorization: 'Bearer ' + authenticationService.token,
     },
-    {
-        img: "https://www.scdn.co/i/_global/open-graph-default.png",
-        name: "Spotify",
-        totalMember: 5,
-        currentMember: 0,
-        id: 3
-    }]
-}
+    data: {
+      name: partyName,
+      totalMember,
+    },
+  };
 
-const create = (partyName: string, totalMember: number) => {
-    //TODO call create party backend
+  return axios(config).then((resp: AxiosResponse) => {
+    return resp.status === 201;
+  });
+};
 
-}
+const join = async (partyID: number) => {
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    url: `${process.env.REACT_APP_APIDOMAIN}/party/join/${partyID}`,
+    headers: {
+      Authorization: 'Bearer ' + authenticationService.token,
+    },
+  };
 
+  return axios(config).then((resp: AxiosResponse) => {
+    return resp.status === 201;
+  });
+};
 
-export {
-    getList,
-    create,
-}
+export { getList, create, join };

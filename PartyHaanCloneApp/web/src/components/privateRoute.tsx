@@ -1,18 +1,22 @@
-import React, { Component, FC } from 'react';
+import React from 'react';
 import { Route, useHistory } from 'react-router-dom';
 import { authenticationService } from '../services/authentication';
 
 function PrivateRoute({ component: Component, ...rest }: any) {
-
-    let history = useHistory();
-    return <Route {...rest} render={props => {
+  let history = useHistory();
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
         const token = authenticationService.token;
         if (!token) {
-            history.push('/')
+          history.push('/');
         }
 
-        return <Component {...props} />
-    }} />
+        return <Component {...props} />;
+      }}
+    />
+  );
 }
 
-export default PrivateRoute
+export default PrivateRoute;
