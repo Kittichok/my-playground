@@ -7,8 +7,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
-	"github.com/kittichok/app/internal/models"
-	"github.com/kittichok/app/internal/utils"
+	"github.com/kittichok/go-auth/internal/models"
+	"github.com/kittichok/go-auth/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )

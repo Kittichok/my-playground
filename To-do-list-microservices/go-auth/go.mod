@@ -1,4 +1,4 @@
-module github.com/kittichok/app
+module github.com/kittichok/go-auth
 
 go 1.14
 

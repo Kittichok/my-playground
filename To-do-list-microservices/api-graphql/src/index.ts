@@ -33,6 +33,9 @@ async function main() {
   const path = '/graphql';
   app.use(cors())
   app.use(bodyParser.json())
+  app.get('/ping', (_req:any, res:any) => {
+    res.status(200).send('pong')
+  });
   app.use(path, verifyJWT);
   server.applyMiddleware({ app, path });
   app.listen(PORT, () => console.log('Server has started!'));

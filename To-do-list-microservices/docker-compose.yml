@@ -18,7 +18,7 @@ services:
       - 4000:4000
   web:
     build:
-      context: ./web
+      context: ./todo-site
     networks:
       - frontend
     ports:
