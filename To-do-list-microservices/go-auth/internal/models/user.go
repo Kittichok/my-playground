@@ -17,9 +17,7 @@ func (u *User) AddToken(t Token) error {
 	u.Tokens = append(u.Tokens, t)
 	fmt.Println(u)
 	fmt.Println(u.Tokens)
-	err := DB.Model(&u).Update(User{
-		Tokens: u.Tokens,
-	}).Error
+	err := DB.Model(&u).Update("Tokens", u.Tokens).Error
 	return err
 }
 

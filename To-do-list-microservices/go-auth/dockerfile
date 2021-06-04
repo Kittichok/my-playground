@@ -1,19 +1,15 @@
 FROM golang:1.15-alpine
 
-# RUN apk --update add \
-#     go \
-#     musl-dev
-# RUN apk --update add \
-#     util-linux-dev
-# RUN apk add --no-cache tzdata
-# RUN apk --update --no-cache add curl
-# RUN apk add --no-cache ca-certificates
-ENV CGO_ENABLED=0
+RUN apk add build-base
+RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init 
+# ENV CGO_ENABLED=0
 
 WORKDIR /go/src/go-auth
 COPY . .
 RUN go mod download
 
 RUN go build .
+
+EXPOSE 80
 
 CMD ["./go-auth"]

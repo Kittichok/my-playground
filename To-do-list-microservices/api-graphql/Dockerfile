@@ -1,17 +1,16 @@
-FROM node:12-slim
+FROM node:14-alpine
 
-RUN apt-get -y update
-RUN apt-get -y upgrade
-RUN apt-get install -y sqlite3 libsqlite3-dev
+RUN apk update
+RUN apk add git sqlite python make g++ > /dev/null
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN yarn
+RUN npm install
 
 COPY . .
 
-# EXPOSE 3000
+EXPOSE 4000
 
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]

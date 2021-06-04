@@ -8,5 +8,8 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/google/uuid v1.1.4
 	github.com/jinzhu/gorm v1.9.16
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/rahmanfadhil/gin-bookstore v0.0.0-20200805034825-de0f04215ba8
+	gorm.io/driver/sqlite v1.1.4 // indirect
+	gorm.io/gorm v1.21.10 // indirect
 )
