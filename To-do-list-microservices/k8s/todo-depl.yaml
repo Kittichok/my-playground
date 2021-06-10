@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      containers:
+      - name: todo-service
+        image: to-do-list-microservices_api-todo:latest
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-cluster
+spec:
+  selector:
+    app: todo
+  ports:
+    - name: todo
+      protocol: TCP
+      port: 4000
+      targetPort: 4000

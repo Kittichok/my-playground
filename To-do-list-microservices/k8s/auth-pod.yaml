@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: auth
+spec:
+  containers:
+    - name: auth
+      image: to-do-list-microservices_auth-service:latest
+      imagePullPolicy: Never
+      ports:
+      - containerPort: 80
