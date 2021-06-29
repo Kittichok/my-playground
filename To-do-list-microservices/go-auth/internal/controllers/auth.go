@@ -114,6 +114,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
+	//TODO change store to pass.salt format??
 	salt, err := utils.GenerateRandomBytes(utils.SaltSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "system error"})

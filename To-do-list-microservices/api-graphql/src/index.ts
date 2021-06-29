@@ -9,10 +9,12 @@ import bodyParser from 'body-parser';
 import { ApolloServer } from 'apollo-server-express';
 import * as jwt from 'jsonwebtoken';
 import cors from 'cors'
+import { initTracer } from "./utils/traceLogging";
+
+const tracer = initTracer("todo-service");
 
 const PORT = process.env.PORT || 4000
 
-//TODO wrap with express for use a jwt authorize
 async function main() {
   const connection = await createConnection();
   await connection.synchronize();
@@ -34,11 +36,13 @@ async function main() {
   app.use(cors())
   app.use(bodyParser.json())
   app.get('/ping', (_req:any, res:any) => {
+    const span = tracer.startSpan("GET /ping");
     res.status(200).send('pong')
+    span.finish();
   });
   app.use(path, verifyJWT);
   server.applyMiddleware({ app, path });
-  app.listen(PORT, () => console.log('Server has started!'));
+  app.listen(PORT, () => console.log('Server has started!', PORT));
 }
 
 main();
@@ -58,6 +62,8 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
       req.body["userid"] = decoded.jti;
       next();
     } else {
+      const span = tracer.startSpan("token unauthorize");
+      span.finish();
       res.status(401).send();
     }
   }
