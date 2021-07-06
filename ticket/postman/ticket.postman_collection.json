@@ -1,0 +1,129 @@
+{
+	"info": {
+		"_postman_id": "202f7d8d-d297-4d2a-893e-36074da45a16",
+		"name": "ticket",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Task 1\",\n    \"description\": \"test tset test\",\n    \"contract\": \"ccccccccc\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ticket/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ticket",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Task 222222\",\n    \"description\": \"techanaasdasjdlsdasdt\",\n    \"status\": \"rejected\",\n    \"id\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ticket/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ticket",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list accepted",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/ticket/list/accepted",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ticket",
+						"list",
+						"accepted"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list pending",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/ticket/list/pending",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ticket",
+						"list",
+						"pending"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/ticket/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ticket",
+						"list"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
