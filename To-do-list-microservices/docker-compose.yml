@@ -17,6 +17,9 @@ services:
     ports:
       - 4000:4000
 
+  # jaeger:
+    # 
+
   # web:
   #   build:
   #     context: ./todo-site

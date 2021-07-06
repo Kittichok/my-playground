@@ -82,3 +82,9 @@ kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin
 
 k6 ....
 ```
+
+
+Environtment
+```
+kubectl create secret generic [name] --from-literal=[Key]=[Value]
+```
