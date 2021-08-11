@@ -9,6 +9,7 @@ Diagram
 - [x] Todo service
 - [x] Run on <a id="orcestra">orcestra tool</a>
 - [x] Load test <a id="autoscale">autoscale</a>
+- [ ] monitoring
 - [ ] api gate way
 ---
 # Minikube
