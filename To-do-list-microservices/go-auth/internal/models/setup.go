@@ -1,15 +1,14 @@
 package models
 
 import (
-	"gorm.io/driver/sqlite"
+	"github.com/kittichok/go-auth/internal/utils"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-func ConnectDataBase() {
-
-	database, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func ConnectDataBase(d gorm.Dialector) {
+	database, err := gorm.Open(d, &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database!")
@@ -21,8 +20,13 @@ func ConnectDataBase() {
 	DB = database
 }
 
-func Seed() {
-	DB.Create(&User{
-		Username: "test",
-		Password: "test"})
+func SeedUser(u User) {
+	salt, err := utils.GenerateRandomBytes(utils.SaltSize)
+	if err != nil {
+		panic("Failed to generate salt")
+	}
+	hash := utils.HashPassword([]byte(u.Password), salt)
+	u.Password = string(hash)
+	u.Salt = string(salt)
+	DB.Create(u)
 }

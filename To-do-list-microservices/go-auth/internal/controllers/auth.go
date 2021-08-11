@@ -63,11 +63,17 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"AccessToken": tokenString,
-		"TokenType":   "Bearer",
-		"ExpiresIn":   expiresAt,
-	})
+	var r struct {
+		AccessToken string `json:"AccessToken"`
+		TokenType string `json:"TokenType"`
+		ExpiresIn int64 `json:"ExpiresIn"`
+	}
+
+	r.AccessToken = tokenString
+	r.TokenType = "Bearer"
+	r.ExpiresIn = expiresAt
+
+	c.JSON(200, r)
 	return
 }
 
@@ -114,7 +120,6 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	//TODO change store to pass.salt format??
 	salt, err := utils.GenerateRandomBytes(utils.SaltSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "system error"})

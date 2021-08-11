@@ -1,19 +1,15 @@
-package main
+package server
 
 import (
-	"os"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kittichok/go-auth/internal/controllers"
-	"github.com/kittichok/go-auth/internal/models"
 )
 
-func main() {
+
+func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	models.ConnectDataBase()
-	// models.Seed()
 	r.Use(cors.Default())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -32,14 +28,5 @@ func main() {
 		v1.POST("/signup", controllers.SignUp)
 		//TODO add api refresh token
 	}
-	port := getenv("PORT", "80")
-	r.Run(":" + port)
-}
-
-func getenv(key, fallback string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return fallback
-	}
-	return value
+	return r
 }
