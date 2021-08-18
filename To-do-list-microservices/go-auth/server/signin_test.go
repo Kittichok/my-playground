@@ -1,4 +1,4 @@
-package tests
+package server_test
 
 import (
 	"bytes"
@@ -8,7 +8,10 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kittichok/go-auth/internal/controllers"
 	"github.com/kittichok/go-auth/internal/models"
+	"github.com/kittichok/go-auth/internal/repository"
+	"github.com/kittichok/go-auth/internal/usecase/users"
 	"github.com/kittichok/go-auth/server"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
@@ -21,12 +24,14 @@ func TestSignInSuccess(t *testing.T) {
 		Username: "test",
 		Password: "test"}
 	models.SeedUser(u)
-
-	router := server.SetupRouter()
+	rep := repository.NewUserRepository(models.DB)
+	usecase := users.NewUserUseCase(rep)
+	authController := controllers.NewAuthController(usecase)
+	router := server.SetupRouter(authController)
 
 	w := httptest.NewRecorder()
 	body := bytes.NewBufferString("{\"username\":\"test\", \"password\":\"test\"}")
-	req, _ := http.NewRequest("POST", "/v1/api/signin", body)
+	req, _ := http.NewRequest("POST", "/api/v1/signin", body)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
@@ -43,12 +48,14 @@ func TestSignInSuccess(t *testing.T) {
 func TestSignInInvalidUser(t *testing.T) {
 	d := sqlite.Open("file::memory:")
 	models.ConnectDataBase(d)
-
-	router := server.SetupRouter()
+	rep := repository.NewUserRepository(models.DB)
+	u := users.NewUserUseCase(rep)
+	authController := controllers.NewAuthController(u)
+	router := server.SetupRouter(authController)
 
 	w := httptest.NewRecorder()
 	body := bytes.NewBufferString("{\"username\":\"test\", \"password\":\"test\"}")
-	req, _ := http.NewRequest("POST", "/v1/api/signin", body)
+	req, _ := http.NewRequest("POST", "/api/v1/signin", body)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 400, w.Code)

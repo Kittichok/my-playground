@@ -1,1 +1,4 @@
 .DS_Store
+*.db
+To-do-list-microservices/go-auth/tmp
+To-do-list-microservices/go-auth/bin/air

@@ -1,8 +1,10 @@
 version: "3.7"
 services:
   auth-service:
-    build:
-      context: ./go-auth
+    build: ./go-auth
+    command: air
+    volumes:
+      - ./go-auth:/src/
     networks:
       - backend
       - frontend

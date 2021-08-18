@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/kittichok/go-auth/internal/models"
+	"github.com/kittichok/go-auth/internal/pkg"
 	"github.com/kittichok/go-auth/server"
-	"gorm.io/driver/sqlite"
 )
 
 
 func main() {
-	d := sqlite.Open("test.db")
-	models.ConnectDataBase(d)
+	//TODO: use inject instead
+	pkg.InitTrace()
+	pkg.SetupTransacName("auth")
 	
 	server.Init()
 }

@@ -3,17 +3,32 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/google/uuid"
-	"github.com/kittichok/go-auth/internal/models"
-	"github.com/kittichok/go-auth/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kittichok/go-auth/internal/models"
+	"github.com/kittichok/go-auth/internal/pkg"
+	"github.com/kittichok/go-auth/internal/usecase/users"
 )
 
-func SignIn(c *gin.Context) {
+type AuthController interface {
+	SignIn(*gin.Context)
+	SignUp(*gin.Context)
+	GetUsers(*gin.Context)
+	GetTokens(*gin.Context)
+}
+
+type authController struct {
+	usecase users.UseCase
+}
+
+func NewAuthController(u users.UseCase) AuthController {
+	return authController{
+		usecase: u,
+	}
+}
+
+func (a authController) SignIn(c *gin.Context) {
+	span := pkg.StartSpan(c.Request.Context(), "signin")
 	var json *models.User
 	err := c.ShouldBindJSON(&json)
 	if err != nil {
@@ -21,63 +36,20 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	var existUser models.User
-	// @TODO : refactor
-	err = models.DB.First(&existUser, models.User{Username: json.Username}).Error
-	if err != nil {
-		fmt.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username or password"})
-		return
-	}
-	json.Password = string(utils.HashPassword([]byte(json.Password), []byte(existUser.Salt)))
-	err = models.DB.First(&existUser, json).Error
-	if err != nil {
-		fmt.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username or password"})
-		return
-	}
-
-	currentTime := time.Now().AddDate(0, 0, 2).Unix()
-	expiresAt := int64(currentTime)
-	claims := &jwt.StandardClaims{
-		ExpiresAt: expiresAt,
-		Issuer:    "auth.todo-list",
-		// Id:        strconv.FormatUint(uint64(existUser.ID), 10),
-		Id: existUser.ID,
-	}
-
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	mySigningKey := []byte("AllYourBase")
-	tokenString, _ := accessToken.SignedString(mySigningKey)
-
-	t := models.Token{
-		AccessToken: tokenString,
-		IsActive:    true,
-		UserID:      existUser.ID,
-	}
-	err = models.SaveToken(t)
+	r, err := a.usecase.SignIn(*json)
 	if err != nil {
 		fmt.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var r struct {
-		AccessToken string `json:"AccessToken"`
-		TokenType string `json:"TokenType"`
-		ExpiresIn int64 `json:"ExpiresIn"`
-	}
-
-	r.AccessToken = tokenString
-	r.TokenType = "Bearer"
-	r.ExpiresIn = expiresAt
-
+	pkg.FinishSpan(span)
 	c.JSON(200, r)
 	return
 }
 
-func GetUsers(c *gin.Context) {
+func (a authController) GetUsers(c *gin.Context) {
+	span := pkg.StartSpan(c.Request.Context(), "get users")
 	var users []models.User
 	err := models.DB.Find(&users).Error
 	if err != nil {
@@ -85,13 +57,15 @@ func GetUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	pkg.FinishSpan(span)
 	c.JSON(200, gin.H{
 		"users": users,
 	})
 	return
 }
 
-func GetTokens(c *gin.Context) {
+func (a authController) GetTokens(c *gin.Context) {
+	span := pkg.StartSpan(c.Request.Context(), "get tokens")
 	var tokens []models.Token
 	err := models.DB.Find(&tokens).Error
 	if err != nil {
@@ -99,13 +73,15 @@ func GetTokens(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	pkg.FinishSpan(span)
 	c.JSON(200, gin.H{
 		"tokens": tokens,
 	})
 	return
 }
 
-func SignUp(c *gin.Context) {
+func (a authController) SignUp(c *gin.Context) {
+	span := pkg.StartSpan(c.Request.Context(), "signup")
 	var json *models.User
 	err := c.ShouldBindJSON(&json)
 	if err != nil {
@@ -113,28 +89,14 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	var existUser models.User
-	models.DB.First(&existUser, models.User{Username: json.Username})
-	if existUser.Username != "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user is exist"})
+	err = a.usecase.SignUp(*json)
+	if err != nil {
+		pkg.FinishSpan(span)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	salt, err := utils.GenerateRandomBytes(utils.SaltSize)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "system error"})
-		return
-	}
-	hash := utils.HashPassword([]byte(json.Password), salt)
-	json.Password = string(hash)
-	json.Salt = string(salt)
-	json.ID = uuid.Must(uuid.NewRandom()).String()
-	var user = models.DB.Create(&json)
-	// var user = models.DB.Create(models.User{Username: json.Username, Password: json.Password, Salt: json.Salt})
-	if user != nil {
-		c.Status(http.StatusCreated)
-		return
-	}
-	c.JSON(http.StatusInternalServerError, gin.H{"error": "system error"})
+	pkg.FinishSpan(span)
+	c.Status(http.StatusCreated)
 	return
 }
