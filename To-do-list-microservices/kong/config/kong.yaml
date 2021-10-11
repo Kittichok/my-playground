@@ -1,0 +1,38 @@
+# a very minimal declarative config file
+_format_version: "2.1"
+plugins:
+- name: prometheus
+# - name: jwt
+#   route: todo
+#   config: 
+#     secret_is_base64: false
+#     run_on_preflight: true
+services:
+  # move to same network
+  - host: auth-service
+    name: auth-service
+    port: 80
+    protocol: http
+    routes:
+    - name: auth
+      paths:
+      - /auth/*
+      strip_path: true
+  - host: api-todo
+    name: todo-service
+    port: 4000
+    protocol: http
+    routes:
+    - name: todo
+      paths:
+      - /todo/*
+      strip_path: true
+  - name: metrics
+    url: http://127.0.0.1:8001/metrics
+    routes:
+    - name: metrics
+      paths:
+        - /metrics
+      strip_path: true
+    # plugins:
+    # - name: key-auth

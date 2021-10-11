@@ -1,5 +1,5 @@
+import { check, sleep } from 'k6';
 import http from 'k6/http';
-import { check, group, sleep } from 'k6';
 
 
 export let options = {
@@ -19,7 +19,7 @@ export let options = {
 };
 
 const data = JSON.parse(open('./data.json'));
-const BASE_URL = 'http://auth.com';
+const BASE_URL = 'http://localhost:8000/auth';
 let index = 0;
 
 export default () => {
