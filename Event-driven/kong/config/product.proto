@@ -1,0 +1,31 @@
+syntax = "proto3";
+option go_package = "github.com/kittichok/event-driven/product";
+
+service Product {
+  rpc Hello (HelloRequest) returns (ProductListResp) {
+    option (google.api.http) = {
+      get: "/v1/messages/{name}"
+      post: "/v1/messages/"
+      body: "*"
+    };
+  }
+
+  rpc ListProduct(Empty) returns (ProductListResp) {
+    // Define HTTP mapping.
+    // Client example (Assuming your service is hosted at the given 'DOMAIN_NAME'):
+    //   curl http://DOMAIN_NAME/v1/shelves
+    option (google.api.http) = { get: "/v1/products" };
+  }
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message Empty {
+  string message = 1;
+}
+
+message ProductListResp {
+  string message = 1;
+}

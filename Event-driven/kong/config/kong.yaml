@@ -1,0 +1,34 @@
+# a very minimal declarative config file
+_format_version: "2.1"
+plugins:
+- name: prometheus
+# - name: grpc-gateway
+#   config: 
+#     proto: ../product/proto/product.proto
+services:
+  - name: metrics
+    url: http://127.0.0.1:8001/metrics
+    routes:
+    - name: metrics
+      paths:
+        - /metrics
+      strip_path: true
+  - name: product
+    # protocol: grpc
+    # host: product
+    # port: 50051
+    url: grpc://product:50051
+    routes:
+    - name: product-routes
+      protocols:
+      - http
+      paths:
+      - /
+      # strip_path: true
+      headers: { 
+        x-grpc :  [ 'true' ] 
+      }
+      plugins:
+      - name: grpc-gateway
+        config:
+          proto: /opt/kong/product.proto

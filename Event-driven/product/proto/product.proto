@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "github.com/kittichok/event-driven/product";
+service Product {
+  rpc Hello (HelloRequest) returns (ProductListResp) {
+  }
+  rpc ListProduct(Empty) returns (ProductListResp) {
+  }
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message Empty {
+  string message = 1;
+}
+
+message ProductListResp {
+  string message = 1;
+}

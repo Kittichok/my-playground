@@ -1,0 +1,3 @@
+
+genpb:
+	sh genpb.sh
