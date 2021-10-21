@@ -1,11 +1,11 @@
 
 start:
-	docker-compose up -d
+	cd pproduct && docker-compose -f docker-compose.hotreload.yml up -d
 	cd kong && make kong-postgres
 
-startwb:
-	docker-compose up -d --build
-	cd kong && make kong-postgres
+# startwb:
+# 	cd pproduct && docker-compose -f docker-compose.hotreload.yml up -d --build
+# 	cd kong && make kong-postgres
 
 clean:
 	docker-compose kill

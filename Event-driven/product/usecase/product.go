@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/kittichok/event-driven/product/models"
-	"github.com/kittichok/event-driven/product/repository"
+	"github.com/kittichok/event-driven/product/db/models"
+	"github.com/kittichok/event-driven/product/db/repository"
 )
 
 type RespProduct struct {
@@ -12,16 +12,32 @@ type RespProduct struct {
 }
 
 type IUseCase interface {
-	GetProductList() ([]*RespProduct, error)
-	UpdateProduct(models.Product) error
+	GetProductList() ([]models.Product, error)
+	// UpdateProduct(models.Product) error
 	AddProduct(models.Product) error
-	InactiveProduct(int64) error
+	// InactiveProduct(int64) error
 }
 
 type ProductUsecase struct {
 	rep repository.IProductRepository
 }
 
-func NewProductUseCase(rep repository.IProductRepository) ProductUsecase {
+func NewProductUseCase(rep repository.IProductRepository) IUseCase {
 	return ProductUsecase{rep}
+}
+
+func (p ProductUsecase) GetProductList() ([]models.Product, error) {
+	products, err := p.rep.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
+}
+
+func (p ProductUsecase) AddProduct(product models.Product) error {
+	err := p.rep.Add(product)
+	if err != nil {
+		return err
+	}
+	return nil
 }

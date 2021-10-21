@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/kittichok/event-driven/product/models"
+	"github.com/kittichok/event-driven/product/db/models"
 	"gorm.io/gorm"
 )
 

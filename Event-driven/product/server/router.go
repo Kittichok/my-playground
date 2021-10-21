@@ -6,7 +6,7 @@ import (
 	"github.com/kittichok/event-driven/product/controllers"
 )
 
-func SetupRouter(c controllers.AuthController) *gin.Engine {
+func SetupRouter(c controllers.IController) *gin.Engine {
 	r := gin.Default()
 
 	// r.Use(sentrygin.New(sentrygin.Options{}))
@@ -23,6 +23,7 @@ func SetupRouter(c controllers.AuthController) *gin.Engine {
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/products", c.GetProductList)
+		v1.POST("/product", c.AddProduct)
 	}
 	return r
 }

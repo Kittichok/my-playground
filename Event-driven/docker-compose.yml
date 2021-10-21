@@ -7,9 +7,9 @@ services:
     networks:
       - backend
     ports:
-      - "50051:50051"
+      - "5000:5000"
     expose:
-      - 50051
+      - 5000
 
 #   zookeeper:
 #     image: docker.io/bitnami/zookeeper:latest
