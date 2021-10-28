@@ -1,48 +1,44 @@
 version: "3.7"
 
 services:
-  product:
-    build:
-      context: ./product
+
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
       - backend
+  kafka:
+    image: docker.io/bitnami/kafka:latest
     ports:
-      - "5000:5000"
+      - "9092:9092"
+      # - '9093:9093'
     expose:
-      - 5000
+      - "9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=EXTERNAL:PLAINTEXT
+      # - KAFKA_CFG_LISTENERS=EXTERNAL://localhost:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      # - KAFKA_CLIENT_USER=user
+      # - KAFKA_CLIENT_PASSWORD=password
+    depends_on:
+      - zookeeper
+    networks:
+      - backend
 
-#   zookeeper:
-#     image: docker.io/bitnami/zookeeper:latest
-#     ports:
-#       - "2181:2181"
-#     volumes:
-#       - "zookeeper_data:/bitnami"
-#     environment:
-#       - ALLOW_ANONYMOUS_LOGIN=yes
-#     networks:
-#       - backend
-#   kafka:
-#     image: docker.io/bitnami/kafka:latest
-#     ports:
-#       - "9092:9092"
-#     volumes:
-#       - "kafka_data:/bitnami"
-#     environment:
-#       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-#       - ALLOW_PLAINTEXT_LISTENER=yes
-#       - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT//:9092
-#       - KAFKA_CLIENT_USER=user
-#       - KAFKA_CLIENT_PASSWORD=password
-#     depends_on:
-#       - zookeeper
-#     networks:
-#       - backend
-
-# volumes:
-#   zookeeper_data:
-#     driver: local
-#   kafka_data:
-#     driver: local
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
 
 networks: 
   backend:

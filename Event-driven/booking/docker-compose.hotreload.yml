@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  booking:
+    build:
+      context: .
+      dockerfile: Dockerfile.hotreload
+    networks:
+      - backend
+    ports:
+      - "4000:4000"
+    expose:
+      - 4000
+    volumes:
+      - .:/go/src/booking
+
+networks: 
+  backend:
+    driver: bridge
+    external: true
+  frontend:
+    driver: bridge

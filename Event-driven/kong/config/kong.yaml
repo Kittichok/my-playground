@@ -13,6 +13,24 @@ services:
       paths:
         - /metrics
       strip_path: true
+  - name: product-http
+    url: http://product:5000/
+    routes:
+    - name: product
+      paths:
+        - /product
+  - name: boooking-http
+    url: http://boooking:4000/
+    routes:
+    - name: boooking
+      paths:
+        - /boooking
+  - name: payment-http
+    url: http://payment:5002/
+    routes:
+    - name: payment
+      paths:
+        - /payment
   - name: product
     # protocol: grpc
     # host: product
