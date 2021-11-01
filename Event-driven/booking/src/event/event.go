@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/kittichok/event-driven/booking/src/db/models"
+	"github.com/kittichok/event-driven/booking/src/db/repository"
 	kafka "github.com/segmentio/kafka-go"
 )
 
@@ -19,6 +21,24 @@ const (
 	server    = "kafka:9092"
 	groupID   = "consumer-group-id"
 )
+
+type EventName string
+
+const (
+	BookingSubmit  EventName = "BookingSubmit"
+	BookingUpdated EventName = "BookingUpdated"
+	PaymentSuccess EventName = "PaymentSuccess"
+	PaymentFail    EventName = "PaymentFail"
+)
+
+type BookingSubmitBody struct {
+	Booking       models.Booking
+	BookingDetail []models.BookingDetail
+}
+
+type BookingUpdateBody struct {
+	Booking models.Booking
+}
 
 func NewEventConnection() Event {
 	conn, err := kafka.DialLeader(context.Background(), "tcp", server, topic, partition)
@@ -34,7 +54,7 @@ func NewEventConnection() Event {
 	return Event{conn}
 }
 
-func NewConsumer() {
+func NewConsumer(repo repository.IRepository) {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  []string{server},
 		GroupID:  groupID,
@@ -51,14 +71,14 @@ func NewConsumer() {
 			break
 		}
 		fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
-		eventProcesser(string(m.Key), string(m.Value))
+		eventProcesser(string(m.Key), string(m.Value), repo)
 		if err := r.CommitMessages(ctx, m); err != nil {
 			log.Fatal("failed to commit messages:", err)
 		}
 	}
 }
 
-func (e Event) SubmitMessage(ctx context.Context, eventName string, msg string) {
+func (e Event) SubmitMessage(ctx context.Context, eventName EventName, msg string) {
 	_, err := e.conn.WriteMessages(
 		kafka.Message{
 			Key:   []byte(eventName),
@@ -70,8 +90,13 @@ func (e Event) SubmitMessage(ctx context.Context, eventName string, msg string) 
 	}
 }
 
-func eventProcesser(key string, msg string) {
+func eventProcesser(key string, msg string, repo repository.IRepository) {
 	//TODO product price change?
 	//TODO payment result success or fail
+	if key == string(BookingUpdated) {
+		updateBooking(msg, repo)
+	} else if key == string(PaymentSuccess) {
+		updateBooking(msg, repo)
+	}
 	return
 }

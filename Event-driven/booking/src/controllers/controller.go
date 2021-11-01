@@ -46,3 +46,19 @@ func (c Controller) UpdateBooking(ctx *gin.Context) {
 	}
 	ctx.Status(http.StatusCreated)
 }
+
+func (c Controller) SubmitBooking(ctx *gin.Context) {
+	var bookingID int64
+	err := ctx.ShouldBindUri(&bookingID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = c.usecase.SubmitBooking(ctx, bookingID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.Status(http.StatusAccepted)
+}

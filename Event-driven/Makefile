@@ -14,6 +14,9 @@ down:
 	cd booking && docker-compose -f docker-compose.hotreload.yml down
 	cd kong && make clean
 
+test:
+	echo "not implemented yet"
+
 clean:
 	docker-compose kill
 	docker-compose rm -f

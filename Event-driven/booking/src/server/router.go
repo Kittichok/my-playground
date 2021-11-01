@@ -24,6 +24,7 @@ func SetupRouter(c controllers.Controller) *gin.Engine {
 	{
 		v1.POST("/booking", c.CreateBooking)
 		v1.PATCH("/booking", c.UpdateBooking)
+		v1.GET("/booking/:bookingID/submit", c.SubmitBooking)
 	}
 	return r
 }

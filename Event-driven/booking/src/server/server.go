@@ -18,7 +18,7 @@ func Init() {
 	c := controllers.NewController(u)
 	r := SetupRouter(c)
 
-	go event.NewConsumer()
+	go event.NewConsumer(rep)
 
 	//TODO use viper get env
 	port := "4000"
