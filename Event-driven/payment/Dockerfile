@@ -1,0 +1,16 @@
+FROM golang:1.17-alpine
+
+RUN apk add build-base
+RUN apk --no-cache add make git gcc libtool musl-dev ca-certificates dumb-init 
+# ENV CGO_ENABLED=0
+RUN go env -w GOPRIVATE=""
+
+WORKDIR /go/payment/src
+COPY . .
+RUN go mod download
+
+RUN go build .
+
+EXPOSE 4001
+
+CMD ["./booking"]

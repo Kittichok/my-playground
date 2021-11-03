@@ -15,6 +15,7 @@ func updateBooking(msg string, repo repository.IRepository) {
 	if err != nil {
 		fmt.Errorf("event update booking error: %v", err.Error())
 	}
+	//FIX update but nothing change
 	err = repo.UpdateBooking(booking)
 	if err != nil {
 		fmt.Errorf("event update booking error: %v", err.Error())

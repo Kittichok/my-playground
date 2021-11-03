@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  payment:
+    build:
+      context: .
+      dockerfile: Dockerfile.hotreload
+    networks:
+      - backend
+    ports:
+      - "4001:4001"
+    expose:
+      - 4001
+    volumes:
+      - .:/go/payment/src
+
+networks: 
+  backend:
+    driver: bridge
+    external: true
+  frontend:
+    driver: bridge

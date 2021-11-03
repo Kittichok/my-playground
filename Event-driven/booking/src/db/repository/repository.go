@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/kittichok/event-driven/booking/src/db/models"
 	"gorm.io/gorm"
 )
@@ -74,7 +76,7 @@ func (repo Repository) FindAll(model interface{}) (interface{}, error) {
 
 func (repo Repository) FindAllBookingDetail(b models.BookingDetail) ([]models.BookingDetail, error) {
 	var results []models.BookingDetail
-	result := repo.DB.Find(&results, b)
+	result := repo.DB.Find(&results, models.BookingDetail{BookID: b.BookID})
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -82,7 +84,7 @@ func (repo Repository) FindAllBookingDetail(b models.BookingDetail) ([]models.Bo
 }
 
 func (repo Repository) FindBooking(b models.Booking) (*models.Booking, error) {
-	result := repo.DB.Find(&b, b)
+	result := repo.DB.First(&b, models.Booking{ID: b.ID})
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -91,11 +93,13 @@ func (repo Repository) FindBooking(b models.Booking) (*models.Booking, error) {
 
 func (repo Repository) UpdateBooking(b models.Booking) error {
 	var booking models.Booking
-	err := repo.DB.Find(&booking, b.ID)
+	err := repo.DB.First(&booking, models.Booking{ID: b.ID})
 
 	if err != nil {
 		return err.Error
 	}
+	log.Printf("booking : %v", booking.PaymentStatus)
+	log.Printf("b status : %v", b.PaymentStatus)
 
 	booking.PaymentStatus = b.PaymentStatus
 
