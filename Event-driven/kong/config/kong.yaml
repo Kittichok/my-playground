@@ -25,28 +25,25 @@ services:
     - name: boooking
       paths:
         - /boooking
-  - name: payment-http
-    url: http://payment:5002/
-    routes:
-    - name: payment
-      paths:
-        - /payment
-  - name: product
-    # protocol: grpc
-    # host: product
-    # port: 50051
-    url: grpc://product:50051
-    routes:
-    - name: product-routes
-      protocols:
-      - http
-      paths:
-      - /
-      # strip_path: true
-      headers: { 
-        x-grpc :  [ 'true' ] 
-      }
-      plugins:
-      - name: grpc-gateway
-        config:
-          proto: /opt/kong/product.proto
+  # - name: payment-http
+  #   url: http://payment:4001/
+  #   routes:
+  #   - name: payment
+  #     paths:
+  #       - /payment
+  # - name: product
+  #   url: grpc://product:50051
+  #   routes:
+  #   - name: product-routes
+  #     protocols:
+  #     - http
+  #     paths:
+  #     - /
+  #     # strip_path: true
+  #     headers: { 
+  #       x-grpc :  [ 'true' ] 
+  #     }
+  #     plugins:
+  #     - name: grpc-gateway
+  #       config:
+  #         proto: /opt/kong/product.proto

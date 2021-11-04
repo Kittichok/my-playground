@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"log"
-
 	"github.com/kittichok/event-driven/booking/src/db/models"
 	"gorm.io/gorm"
 )
@@ -93,19 +91,17 @@ func (repo Repository) FindBooking(b models.Booking) (*models.Booking, error) {
 
 func (repo Repository) UpdateBooking(b models.Booking) error {
 	var booking models.Booking
-	err := repo.DB.First(&booking, models.Booking{ID: b.ID})
+	res := repo.DB.Find(&booking, models.Booking{ID: b.ID})
 
-	if err != nil {
-		return err.Error
+	if res.Error != nil {
+		return res.Error
 	}
-	log.Printf("booking : %v", booking.PaymentStatus)
-	log.Printf("b status : %v", b.PaymentStatus)
 
 	booking.PaymentStatus = b.PaymentStatus
 
-	err = repo.DB.Save(&booking)
-	if err != nil {
-		return err.Error
+	res = repo.DB.Save(&booking)
+	if res.Error != nil {
+		return res.Error
 	}
 	return nil
 }

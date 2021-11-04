@@ -1,16 +1,19 @@
 Product
 - [ ] update product from booking submit event
-- [ ] test
 - [ ] logging
 
 Booking
-- [ ] test
 - [ ] logging
 
 Payment
-- [ ] init project
+- [x] init project
+- [x] event payment processor mock (always success)
 - [ ] api CRUD payment method
-- [ ] api payment
+
+Gateway
+- [x] config to all services
+- [ ] http to grpc
+- [ ] monitor
 
 E2E api test
 - [ ] init project
