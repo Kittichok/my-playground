@@ -40,3 +40,6 @@ clean:
 # bitnami/kafka:latest kafka-console-consumer.sh \
 # --topic booking --from-beginning --bootstrap-server kafka:9092
     
+loadtest:
+	cd tests/loadtest && k6 run --out csv=create-product.csv create-product.js
+# cd tests/loadtest && k6 run --out csv=booking.csv booking.js

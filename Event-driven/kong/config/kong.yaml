@@ -19,12 +19,14 @@ services:
     - name: product
       paths:
         - /product
+      strip_path: true
   - name: boooking-http
     url: http://boooking:4000/
     routes:
     - name: boooking
       paths:
         - /boooking
+      strip_path: true
   # - name: payment-http
   #   url: http://payment:4001/
   #   routes:

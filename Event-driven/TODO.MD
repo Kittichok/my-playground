@@ -17,3 +17,6 @@ Gateway
 
 E2E api test
 - [ ] init project
+
+Load test
+- [x] create product

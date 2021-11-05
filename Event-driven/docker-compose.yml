@@ -34,6 +34,24 @@ services:
     networks:
       - backend
 
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3001:3000
+    networks:
+      - backend
+    expose:
+      - 3000
+
+  prom-server:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    networks:
+      - backend
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
 volumes:
   zookeeper_data:
     driver: local
