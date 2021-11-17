@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/opentracing/opentracing-go"
 	kafka "github.com/segmentio/kafka-go"
 
 	"github.com/kittichok/event-driven/payment/src/event"
@@ -33,8 +34,11 @@ func NewConsumer(usecase usecase.IUseCase) {
 		if err != nil {
 			break
 		}
+		carrierFromKafkaHeaders := TextMapCarrierFromKafkaMessageHeaders(m.Headers)
+		spanCtx, err := opentracing.GlobalTracer().Extract(opentracing.TextMap, carrierFromKafkaHeaders)
+
 		fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
-		err = eventProcesser(string(m.Key), string(m.Value), usecase)
+		err = eventProcesser(spanCtx, string(m.Key), string(m.Value), usecase)
 		if err != nil {
 			log.Fatal("process event error", err)
 		}
@@ -44,9 +48,17 @@ func NewConsumer(usecase usecase.IUseCase) {
 	}
 }
 
-func eventProcesser(key string, msg string, usecase usecase.IUseCase) error {
+func eventProcesser(spanCtx opentracing.SpanContext, key string, msg string, usecase usecase.IUseCase) error {
 	if key == string(event.BookingSubmit) {
-		return usecase.Payment(msg)
+		return usecase.Payment(spanCtx, msg)
 	}
 	return nil
+}
+
+func TextMapCarrierFromKafkaMessageHeaders(headers []kafka.Header) opentracing.TextMapCarrier {
+	textMap := make(map[string]string, len(headers))
+	for _, header := range headers {
+		textMap[header.Key] = string(header.Value)
+	}
+	return opentracing.TextMapCarrier(textMap)
 }

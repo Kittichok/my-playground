@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	opentracing "github.com/opentracing/opentracing-go"
+
 	"github.com/kittichok/event-driven/booking/src/db/models"
 	"github.com/kittichok/event-driven/booking/src/db/repository"
 	"github.com/kittichok/event-driven/booking/src/event"
@@ -66,6 +68,8 @@ func (c UseCase) UpdateBooking(req ReqUpdateBooking) error {
 }
 
 func (c UseCase) SubmitBooking(ctx context.Context, id int64) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "SubmitBooking")
+	defer span.Finish()
 	condition := &models.Booking{ID: id}
 	booking, err := c.repo.FindBooking(*condition)
 	if err != nil {
@@ -83,7 +87,8 @@ func (c UseCase) SubmitBooking(ctx context.Context, id int64) error {
 	if err != nil {
 		return err
 	}
-	c.event.SubmitMessage(ctx, event.BookingSubmit, string(body))
+
+	c.event.SubmitMessage(ctx, span.Context(), event.BookingSubmit, string(body))
 	// TODO submit book and sent event payment to payment service
 	// and update product stock to product service
 

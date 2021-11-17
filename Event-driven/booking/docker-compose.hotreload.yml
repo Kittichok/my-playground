@@ -13,6 +13,16 @@ services:
       - 4000
     volumes:
       - .:/go/src/booking
+    environment:
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/ping"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks: 
   backend:

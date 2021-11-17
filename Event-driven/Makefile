@@ -23,6 +23,8 @@ clean:
 	docker-compose kill
 	docker-compose rm -f
 
+kong sync:
+	cd kong/config && deck sync
 
     # docker run -it --rm \
     # --network backend \
@@ -41,5 +43,5 @@ clean:
 # --topic booking --from-beginning --bootstrap-server kafka:9092
     
 loadtest:
-	cd tests/loadtest && k6 run --out csv=create-product.csv create-product.js
-# cd tests/loadtest && k6 run --out csv=booking.csv booking.js
+	cd tests/loadtest && k6 run create-product.js
+# cd tests/loadtest && k6 run booking.js

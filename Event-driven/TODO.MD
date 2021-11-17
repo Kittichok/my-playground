@@ -1,9 +1,9 @@
 Product
 - [ ] update product from booking submit event
-- [ ] logging
+- [ ] trace logging
 
 Booking
-- [ ] logging
+- [ ] trace logging
 
 Payment
 - [x] init project
@@ -12,6 +12,7 @@ Payment
 
 Gateway
 - [x] config to all services
+- [x] loadbalance
 - [ ] http to grpc
 - [ ] monitor
 
@@ -20,3 +21,4 @@ E2E api test
 
 Load test
 - [x] create product
+- [ ] booking product

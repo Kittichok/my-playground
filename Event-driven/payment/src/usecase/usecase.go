@@ -8,10 +8,12 @@ import (
 	"github.com/kittichok/event-driven/payment/src/db/repository"
 	"github.com/kittichok/event-driven/payment/src/event"
 	models "github.com/kittichok/event-driven/payment/src/event/models"
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 )
 
 type IUseCase interface {
-	Payment(msg string) error
+	Payment(spanCtx opentracing.SpanContext, msg string) error
 }
 
 type UseCase struct {
@@ -23,8 +25,11 @@ func NewUseCase(repo repository.IRepository, event event.Event) IUseCase {
 	return UseCase{repo, event}
 }
 
-func (c UseCase) Payment(msg string) error {
-
+func (c UseCase) Payment(spanCtx opentracing.SpanContext, msg string) error {
+	serverSpan := opentracing.GlobalTracer().StartSpan("Payment", ext.RPCServerOption(spanCtx))
+	ctx := context.Background()
+	ctx = opentracing.ContextWithSpan(ctx, serverSpan)
+	defer serverSpan.Finish()
 	b := []byte(msg)
 	var booking models.BookingSubmitBody
 	err := json.Unmarshal(b, &booking)
@@ -33,11 +38,9 @@ func (c UseCase) Payment(msg string) error {
 	}
 
 	//TODO call 3party payment service?
-
-	ctx := context.Background()
 	booking.Booking.PaymentStatus = "paid"
 	body, err := json.Marshal(booking.Booking)
-	c.event.SubmitMessage(ctx, "PaymentSuccess", string(body))
+	c.event.SubmitMessage(ctx, serverSpan.Context(), "PaymentSuccess", string(body))
 
 	return nil
 }

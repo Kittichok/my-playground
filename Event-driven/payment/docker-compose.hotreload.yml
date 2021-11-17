@@ -13,6 +13,9 @@ services:
       - 4001
     volumes:
       - .:/go/payment/src
+    environment:
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
 
 networks: 
   backend:

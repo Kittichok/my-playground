@@ -2,6 +2,10 @@
 _format_version: "2.1"
 plugins:
 - name: prometheus
+- name: rate-limiting
+  config:
+    minute: 5
+    policy: local
 # - name: grpc-gateway
 #   config: 
 #     proto: ../product/proto/product.proto
@@ -14,14 +18,18 @@ services:
         - /metrics
       strip_path: true
   - name: product-http
-    url: http://product:5000/
+    host: product
+    port: 5000
+    protocol: http
     routes:
     - name: product
       paths:
         - /product
       strip_path: true
   - name: boooking-http
-    url: http://boooking:4000/
+    host: boooking
+    port: 4000
+    protocol: http
     routes:
     - name: boooking
       paths:
@@ -49,3 +57,13 @@ services:
   #     - name: grpc-gateway
   #       config:
   #         proto: /opt/kong/product.proto
+
+upstreams:
+- name: product-http
+  targets:
+  - target: product:5000
+    weight: 100
+- name: booking-http
+  targets:
+  - target: booking:4000
+    weight: 100

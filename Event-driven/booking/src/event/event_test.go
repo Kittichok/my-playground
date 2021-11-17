@@ -1,6 +1,7 @@
 package event
 
 import (
+	"context"
 	"testing"
 
 	"github.com/kittichok/event-driven/booking/src/db"
@@ -23,6 +24,8 @@ func TestUpdateBooking(t *testing.T) {
 	db.ConnectDataBase(d)
 	rep := repository.NewRepository(db.DB)
 	rep.AddBooking(models.NewBooking(9999))
-	updateBooking(msg, rep)
+	ctx := context.Background()
+
+	updateBooking(ctx, msg, rep)
 	t.Fail()
 }
