@@ -28,7 +28,7 @@ type ReqUpdateBooking struct {
 }
 
 type IUseCase interface {
-	CreateBooking(req ReqCreateBooking) error
+	CreateBooking(req ReqCreateBooking) (*models.Booking, error)
 	UpdateBooking(req ReqUpdateBooking) error
 	SubmitBooking(ctx context.Context, bookingID int64) error
 }
@@ -42,11 +42,11 @@ func NewUseCase(repo repository.IRepository, event event.Event) IUseCase {
 	return UseCase{repo, event}
 }
 
-func (c UseCase) CreateBooking(req ReqCreateBooking) error {
+func (c UseCase) CreateBooking(req ReqCreateBooking) (*models.Booking, error) {
 	booking, err := c.repo.AddBooking(models.NewBooking(req.UserID))
 	if err != nil {
 		fmt.Errorf("Error: %v\n", err)
-		return err
+		return nil, err
 	}
 	var details []models.BookingDetail
 	for _, p := range req.Products {
@@ -59,9 +59,9 @@ func (c UseCase) CreateBooking(req ReqCreateBooking) error {
 	}
 	err = c.repo.AddBookingDetail(details)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return booking, nil
 }
 func (c UseCase) UpdateBooking(req ReqUpdateBooking) error {
 	return nil

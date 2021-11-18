@@ -24,12 +24,12 @@ func (c Controller) CreateBooking(ctx *gin.Context) {
 		return
 	}
 
-	err = c.usecase.CreateBooking(json)
+	respData, err := c.usecase.CreateBooking(json)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.Status(http.StatusCreated)
+	ctx.JSON(http.StatusCreated, respData)
 }
 
 func (c Controller) UpdateBooking(ctx *gin.Context) {

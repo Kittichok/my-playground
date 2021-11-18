@@ -43,5 +43,5 @@ kong sync:
 # --topic booking --from-beginning --bootstrap-server kafka:9092
     
 loadtest:
+	cd tests/loadtest && k6 run booking.js
 	cd tests/loadtest && k6 run create-product.js
-# cd tests/loadtest && k6 run booking.js

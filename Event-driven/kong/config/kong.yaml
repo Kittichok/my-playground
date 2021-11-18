@@ -2,10 +2,10 @@
 _format_version: "2.1"
 plugins:
 - name: prometheus
-- name: rate-limiting
-  config:
-    minute: 5
-    policy: local
+# - name: rate-limiting
+#   config:
+#     minute: 5
+#     policy: local
 # - name: grpc-gateway
 #   config: 
 #     proto: ../product/proto/product.proto
@@ -26,14 +26,14 @@ services:
       paths:
         - /product
       strip_path: true
-  - name: boooking-http
-    host: boooking
+  - name: booking-http
+    host: booking
     port: 4000
     protocol: http
     routes:
-    - name: boooking
+    - name: booking
       paths:
-        - /boooking
+        - /booking
       strip_path: true
   # - name: payment-http
   #   url: http://payment:4001/
