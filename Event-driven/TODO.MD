@@ -3,22 +3,28 @@ Product
 - [ ] trace logging
 
 Booking
-- [ ] trace logging
+- [x] trace logging
 
 Payment
 - [x] init project
 - [x] event payment processor mock (always success)
+- [x] trace logging
 - [ ] api CRUD payment method
 
 Gateway
 - [x] config to all services
 - [x] loadbalance
 - [ ] http to grpc
-- [ ] monitor
+- [ ] gql to grpc
+
+Monitor (grafana)
+- [x] config yml
+- [x] kong dashboard
+- [ ] tracing dashboard
 
 E2E api test
 - [ ] init project
 
 Load test
 - [x] create product
-- [ ] booking product
+- [x] booking product
