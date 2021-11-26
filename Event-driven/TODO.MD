@@ -20,7 +20,8 @@ Gateway
 Monitor (grafana)
 - [x] config yml
 - [x] kong dashboard
-- [ ] tracing dashboard
+- [x] tracing
+- [ ] ?? what dashboard should have
 
 E2E api test
 - [ ] init project
