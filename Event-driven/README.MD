@@ -1,3 +1,6 @@
+Architecture
+![Architecture](./img/arch.png)
+
 Start project
 ```sh
 make start

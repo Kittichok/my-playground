@@ -11,6 +11,10 @@ Payment
 - [x] trace logging
 - [ ] api CRUD payment method
 
+ShareLib
+- [ ] init project
+- [ ] replace to another project
+
 Gateway
 - [x] config to all services
 - [x] loadbalance
