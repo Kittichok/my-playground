@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Chat Example</title>
+<script type="text/javascript">
+window.onload = function () {
+    var conn;
+    var msg = document.getElementById("msg");
+    var log = document.getElementById("log");
+    var order = document.getElementById("table");
+    var orderType = document.getElementById("order-type")
+
+    function appendLog(item) {
+        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+        log.appendChild(item);
+        if (doScroll) {
+            log.scrollTop = log.scrollHeight - log.clientHeight;
+        }
+    }
+
+    document.getElementById("form").onsubmit = function () {
+        if (!conn) {
+            return false;
+        }
+        if (!msg.value) {
+            return false;
+        }
+        event = {
+            'name': 'order',
+            'data': {
+            'name': msg.value,
+            'price': 100,
+            "quantity": 1, 
+            "orderType": orderType.value
+            }
+        }
+        console.log(event)
+        conn.send(JSON.stringify(event));
+        msg.value = "";
+        return false;
+    };
+
+    if (window["WebSocket"]) {
+        var item = document.createElement("div");
+        item.innerHTML = `<b>Connecting...</b>`;
+        appendLog(item);
+        conn = new WebSocket("ws://localhost:8080/ws");
+        conn.onclose = function (evt) {
+            var item = document.createElement("div");
+            item.innerHTML = "<b>Connection closed.</b>";
+            appendLog(item);
+        };
+        conn.onmessage = function (evt) {
+            var messages = evt.data.split('\n');
+            for (var i = 0; i < messages.length; i++) {
+                var item = document.createElement("div");
+                item.innerText = messages[i];
+                appendLog(item);
+            }
+        };
+    } else {
+        var item = document.createElement("div");
+        item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
+        appendLog(item);
+    }
+
+
+    function appendOrder(item) {
+        var doScroll = order.scrollTop > order.scrollHeight - order.clientHeight - 1;
+        order.appendChild(item);
+        if (doScroll) {
+            order.scrollTop = order.scrollHeight - order.clientHeight;
+        }
+    }
+    
+    document.getElementById("refesh").onclick = async () => {
+        order.innerHTML = '';
+
+        resp = await fetch('http://localhost:8080/orders')
+        let json = await resp.json();
+
+        let item = document.createElement("div");
+        item.innerHTML = `<b>Sell</b>`;
+        appendOrder(item);
+        json.sell.forEach(element => {
+            let item = document.createElement("div");
+            item.innerHTML = `<b>${element.name}|${element.price}|${element.quantity}</b>`;
+            appendOrder(item);
+        })
+        item = document.createElement("div");
+        item.innerHTML = `<b>Buy</b>`;
+        appendOrder(item);
+        json.buy.forEach(element => {
+            let item = document.createElement("div");
+            item.innerHTML = `<b>${element.name}|${element.price}|${element.quantity}</b>`;
+            appendOrder(item);
+        })
+    }
+
+};
+</script>
+<style type="text/css">
+html {
+    overflow: hidden;
+}
+
+body {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: gray;
+}
+
+#log {
+    width: 50%;
+    background: white;
+    margin: 0;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    right: 0.5em;
+    bottom: 3em;
+    overflow: auto;
+}
+
+#table {
+    width: 50%;
+    background: wheat;
+    margin: 0;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    position: absolute;
+    top: 0.5em;
+    left: 50%;
+    right: 0.5em;
+    bottom: 3em;
+    overflow: auto;
+}
+
+#form {
+    padding: 0 0.5em 0 0.5em;
+    margin: 0;
+    position: absolute;
+    bottom: 1em;
+    left: 0px;
+    width: 100%;
+    overflow: hidden;
+}
+
+</style>
+</head>
+<body>
+<div id="log"></div>
+<form id="form">
+    <!-- <select id="order-type">
+        <option value="sell">sell</option>
+        <option value="buy">buy</option>
+    </select> -->
+    <input type="order-type" id="order-type" size="5" />
+    <input type="text" id="msg" size="64" autofocus />
+    <input type="submit" value="Send" />
+    <input type="submit" value="Refesh" id="refesh"/>
+
+</form>
+
+<div id="table">
+</div>
+
+</body>
+</html>
