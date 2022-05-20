@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/kittichok/event-driven/product/db/models"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -17,4 +18,10 @@ func ConnectDataBase(d gorm.Dialector) {
 	database.AutoMigrate(&models.Product{})
 
 	DB = database
+}
+
+func NewSqliteConnection() (*gorm.DB, error) {
+	d := sqlite.Open("test.db")
+	ConnectDataBase(d)
+	return DB, nil
 }

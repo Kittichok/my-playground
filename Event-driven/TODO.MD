@@ -1,6 +1,7 @@
 Product
 - [ ] update product from booking submit event
 - [ ] trace logging
+- [x] dependencies injection (using uber/dig lib)
 
 Booking
 - [x] trace logging
@@ -33,3 +34,6 @@ E2E api test
 Load test
 - [x] create product
 - [x] booking product
+
+Web
+- [] init project

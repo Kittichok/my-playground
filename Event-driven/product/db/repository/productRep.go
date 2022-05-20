@@ -6,9 +6,10 @@ import (
 )
 
 type IProductRepository interface {
-	Find(models.Product) (*models.Product, error)
+	Find(p models.Product) (*models.Product, error)
 	FindAll() ([]models.Product, error)
 	Add(p models.Product) error
+	Update(p models.Product) error
 }
 
 type productRepository struct {
@@ -16,7 +17,7 @@ type productRepository struct {
 }
 
 func NewProductRepository(DB *gorm.DB) IProductRepository {
-	return productRepository{DB}
+	return productRepository{DB: DB}
 }
 
 func (pRep productRepository) Add(p models.Product) error {
@@ -28,7 +29,12 @@ func (pRep productRepository) Add(p models.Product) error {
 }
 
 func (pRep productRepository) Find(p models.Product) (*models.Product, error) {
-	return nil, nil
+	var product models.Product
+	result := pRep.DB.First(&product, p)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &product, nil
 }
 
 func (pRep productRepository) FindAll() ([]models.Product, error) {
@@ -38,4 +44,12 @@ func (pRep productRepository) FindAll() ([]models.Product, error) {
 		return nil, result.Error
 	}
 	return products, nil
+}
+
+func (pRep productRepository) Update(p models.Product) error {
+	result := pRep.DB.Save(&p)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
