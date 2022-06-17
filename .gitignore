@@ -5,3 +5,5 @@ To-do-list-microservices/go-auth/bin/air
 Event-driven/product/tmp/runner-build
 Event-driven/booking/tmp/runner-build
 Event-driven/payment/tmp/runner-build
+
+**/node_modules/

@@ -7,11 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kittichok/event-driven/product/db/models"
 	"github.com/kittichok/event-driven/product/usecase"
+	opentracing "github.com/opentracing/opentracing-go"
 )
 
 type IController interface {
 	GetProductList(*gin.Context)
 	AddProduct(*gin.Context)
+	Tracer(*gin.Context)
 }
 
 type Controller struct {
@@ -53,4 +55,11 @@ func (c Controller) AddProduct(ctx *gin.Context) {
 	}
 	ctx.Status(http.StatusCreated)
 	return
+}
+
+func (c Controller) Tracer(ctx *gin.Context) {
+	path := ctx.Request.URL.Path
+	span, _ := opentracing.StartSpanFromContext(ctx, path)
+	ctx.Next()
+	span.Finish()
 }

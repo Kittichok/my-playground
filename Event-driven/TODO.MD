@@ -1,6 +1,6 @@
 Product
 - [ ] update product from booking submit event
-- [ ] trace logging
+- [x] trace logging
 - [x] dependencies injection (using uber/dig lib)
 
 Booking
@@ -36,4 +36,4 @@ Load test
 - [x] booking product
 
 Web
-- [] init project
+- [x] init project
